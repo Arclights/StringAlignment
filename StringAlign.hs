@@ -36,3 +36,21 @@ optMatchScore (string1, string2) = optScorer string1 string2
 optScorer :: String -> String -> Int
 optScorer [] _ = 0
 optScorer (x:xs) (y:ys) = (matchScore x y) + (optScorer xs ys)
+
+outputOptAlignments :: String -> String -> IO ()
+outputOptAlignments string1 string2 = do
+							putStrLn ("There are " ++ show (length aligns) ++ " optimal alignments")
+							printAligns aligns
+							where 	aligns = (optAlignments string1 string2)
+									
+											
+printAligns :: [AlignmentType] -> IO()
+printAligns [] = return ()
+printAligns (x:xs) = do
+					putStrLn ("\n" ++ (spaceString(fst x)) ++ "\n" ++ (spaceString(snd x)))
+					printAligns xs
+
+spaceString :: String -> String
+spaceString s = concat [[c] ++ " " | c <- s]
+							
+							
