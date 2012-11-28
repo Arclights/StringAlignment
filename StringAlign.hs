@@ -7,7 +7,7 @@ scoreSpace = -1
 similarityScore :: String -> String -> Int
 similarityScore x [] = (length x) * scoreSpace
 similarityScore [] y = (length y) * scoreSpace
-similarityScore (x:xs) (y:ys) = (max (similarityScore xs ys + matchScore x y).max (similarityScore xs (y:ys) + matchScore x '-')) ((similarityScore (x:xs) ys)+(matchScore '-' y))
+similarityScore (x:xs) (y:ys) = maximum [(similarityScore xs ys + matchScore x y), (similarityScore xs (y:ys) + matchScore x '-'),(similarityScore (x:xs) ys + matchScore '-' y)]
 
 matchScore :: Char -> Char -> Int
 matchScore _ '-' = scoreSpace
@@ -16,7 +16,7 @@ matchScore x y
 			|x == y = scoreMatch
 			|otherwise = scoreMismatch
 
--- Lägger till h1 och h2 först i respektive lista i alla tupler i listan aList
+-- Lägger till h1 och h2 som första element i respektive lista i alla tupler i listan aList
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 
