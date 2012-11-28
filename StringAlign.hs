@@ -15,7 +15,7 @@ similarityScore (x:xs) (y:ys) = maximum [(similarityScore xs ys + matchScore x y
 similarityScore xs ys = similarity (length xs) (length ys)
 	where
 		similarity i j = simTable!!i!!j
-		simTable = [[ simEntry i j | j<-[0..]] | i<-[0..] ]
+		simTable = [[ simEntry i j | j <- [0..]] | i <- [0..] ]
 	
 		simEntry :: Int -> Int -> Int
 		simEntry 0 0 = 0
@@ -39,16 +39,33 @@ matchScore x y
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 
+attachTails :: a -> a -> [([a],[a])] -> [([a],[a])]
+attachTails t1 t2 aList = [(xs++[t1],ys++[t2]) | (xs,ys) <- aList]
+
 ----- 2c -----
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
 maximaBy valueFcn xs = [x | x <- xs, valueFcn x == maximum (map valueFcn xs)]
 
 ----- 2d -----
 optAlignments :: String -> String -> [AlignmentType]
-optAlignments [] [] = [("","")]
+{-optAlignments [] [] = [("","")]
 optAlignments (x:xs) [] = attachHeads x '-' (optAlignments xs [])
 optAlignments [] (y:ys) = attachHeads '-' y (optAlignments [] ys)
-optAlignments (x:xs) (y:ys) = concat (maximaBy (optMatchScore.head) [(attachHeads x y (optAlignments xs ys)), (attachHeads x '-' (optAlignments xs (y:ys))), (attachHeads '-' y (optAlignments (x:xs) ys))])
+optAlignments (x:xs) (y:ys) = concat (maximaBy (optMatchScore.head) [(attachHeads x y (optAlignments xs ys)), (attachHeads x '-' (optAlignments xs (y:ys))), (attachHeads '-' y (optAlignments (x:xs) ys))])-}
+optAlignments xs ys = optAlign (length xs) (length ys)
+	where
+		optAlign i j = optTable!!i!!j
+		optTable = [[ optEntry i j | j<-[0..]] | i<-[0..] ]
+		
+		optEntry :: Int -> Int -> [AlignmentType]
+		optEntry 0 0 = [("","")]
+		optEntry i j
+			|j == 0 = attachHeads x '-' (optEntry (i-1) 0)
+			|i == 0 = attachHeads '-' y (optEntry 0 (j-1))
+			|otherwise = concat (maximaBy (optMatchScore.head) [(attachTails x y (optEntry (i-1) (j-1))), (attachTails x '-' (optEntry (i-1) j)), (attachTails '-' y (optEntry i (j-1)))])
+			where
+				x = xs!!(i-1)
+				y = ys!!(j-1)
 
 optMatchScore :: AlignmentType -> Int
 optMatchScore (string1, string2) = optScorer string1 string2
@@ -76,8 +93,6 @@ spaceString s = concat [[c] ++ " " | c <- s]
 
 
 ----- 3 -----
-table = [[ mcsEntry i j | j<-[0..9]] | i<-[0..9] ]
-mcsEntry :: Int -> Int -> String
-mcsEntry i j = show i ++ show j
+
 							
 							
