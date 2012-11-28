@@ -60,8 +60,8 @@ optAlignments xs ys = optAlign (length xs) (length ys)
 		optEntry :: Int -> Int -> [AlignmentType]
 		optEntry 0 0 = [("","")]
 		optEntry i j
-			|j == 0 = attachHeads x '-' (optEntry (i-1) 0)
-			|i == 0 = attachHeads '-' y (optEntry 0 (j-1))
+			|j == 0 = attachTails x '-' (optEntry (i-1) 0)
+			|i == 0 = attachTails '-' y (optEntry 0 (j-1))
 			|otherwise = concat (maximaBy (optMatchScore.head) [(attachTails x y (optEntry (i-1) (j-1))), (attachTails x '-' (optEntry (i-1) j)), (attachTails '-' y (optEntry i (j-1)))])
 			where
 				x = xs!!(i-1)
