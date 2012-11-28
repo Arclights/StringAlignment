@@ -8,22 +8,24 @@ type AlignmentType = (String, String)
 
 ----- 2a -----
 similarityScore :: String -> String -> Int
-similarityScore [] [] = 0
+{-similarityScore [] [] = 0
 similarityScore (x:xs) [] = similarityScore xs [] + matchScore x '-'
 similarityScore [] (y:ys) = similarityScore [] ys + matchScore '-' y
-similarityScore (x:xs) (y:ys) = maximum [(similarityScore xs ys + matchScore x y), (similarityScore xs (y:ys) + matchScore x '-'),(similarityScore (x:xs) ys + matchScore '-' y)]{-
+similarityScore (x:xs) (y:ys) = maximum [(similarityScore xs ys + matchScore x y), (similarityScore xs (y:ys) + matchScore x '-'),(similarityScore (x:xs) ys + matchScore '-' y)]-}
 similarityScore xs ys = similarity (length xs) (length ys)
 	where
 		similarity i j = simTable!!i!!j
 		simTable = [[ simEntry i j | j<-[0..]] | i<-[0..] ]
 	
 		simEntry :: Int -> Int -> Int
-		simEntry x [] = (length x) * scoreSpace
-		simEntry [] y = (length y) * scoreSpace
-		simEntry (x:xs) (y:ys) = maximum [(similarityScore xs ys + matchScore x y), (similarityScore xs (y:ys) + matchScore x '-'),(similarityScore (x:xs) ys + matchScore '-' y)]
-		where
-			x = xs!!(i-1)
-			y = ys!!(j-1)-}
+		simEntry 0 0 = 0
+		simEntry i j
+			|j == 0 = simEntry (i-1) 0 + matchScore x '-'
+			|i == 0 = simEntry 0 (j-1) + matchScore '-' y
+			|otherwise = maximum [(simEntry (i-1) (j-1) + matchScore x y), (simEntry (i-1) j + matchScore x '-'),(simEntry i (j-1) + matchScore '-' y)]
+			where
+				x = xs!!(i-1)
+				y = ys!!(j-1)
 
 matchScore :: Char -> Char -> Int
 matchScore _ '-' = scoreSpace
