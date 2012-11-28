@@ -21,4 +21,4 @@ attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
-maximaBy valueFcn xs
+maximaBy valueFcn xs = [x | x <- xs, valueFcn x == maximum (map valueFcn xs)]
