@@ -38,11 +38,8 @@ optAlignments [] (y:ys) = attachHeads '-' y (optAlignments [] ys)
 optAlignments (x:xs) (y:ys) = concat (maximaBy (optMatchScore.head) [(attachHeads x y (optAlignments xs ys)), (attachHeads x '-' (optAlignments xs (y:ys))), (attachHeads '-' y (optAlignments (x:xs) ys))])
 
 optMatchScore :: AlignmentType -> Int
-optMatchScore (string1, string2) = optScorer string1 string2
-
-optScorer :: String -> String -> Int
-optScorer [] _ = 0
-optScorer (x:xs) (y:ys) = (matchScore x y) + (optScorer xs ys)
+optMatchScore ([], _) = 0
+optMatchScore ((x:xs), (y:ys)) = (matchScore x y) + (optMatchScore (xs, ys))
 
 
 ----- 2e -----
